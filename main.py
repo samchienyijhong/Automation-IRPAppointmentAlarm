@@ -121,7 +121,7 @@ def irp_auto():
         sleep(2)
         try:
             driver.find_element_by_xpath('//button[text()="Book This"]').click()
-            # driver.find_element_by_id('Submit').click()   # Will fail due to reCAPTCHA so please
+            # driver.find_element_by_id('Submit').click()   # Will fail due to reCAPTCHA
             os.system('say "Please check for I R P appointment"')
             # Use your `normal` browser for submit
             sleep(600)
