@@ -129,7 +129,7 @@ def irp_auto():
             # Edge case control
             if not find_appointment_button.is_enabled() or driver.find_elements_by_xpath(
                     "//*[contains(text(), 'Why is this happening to me?')]") \
-                    or driver.find_elements_by_xpath("//*[contains(text(), 'Please try reloading this page.')]"):
+                    or driver.find_elements_by_xpath("//*[contains(text(), 'There was a problem')]"):
                 driver.refresh()
                 irp_auto()
             # No appointment(s) are currently available
