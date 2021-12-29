@@ -23,7 +23,7 @@ options = Options()
 user_agent = UserAgent(use_cache_server=False, verify_ssl=False).random
 print(user_agent)  # Check
 options.add_argument(f'user-agent={user_agent}')
-# options.add_argument('user-data-dir=your/chrome/profile/path')  # Go chrome://version and check Profile Path
+##options.add_argument('user-data-dir=/Users/poppopgd/Library/Application Support/Google/Chrome/')
 options.add_argument('disable-blink-features=AutomationControlled')
 options.add_experimental_option('useAutomationExtension', False)
 options.add_experimental_option('excludeSwitches', ['enable-automation'])
@@ -39,13 +39,15 @@ def irp_auto():
     # Wait for webpage rendering and close cookie window
     # Refresh if getting blocked
     try:
-        WebDriverWait(driver, 5).until(lambda x: x.find_element_by_id('cookiescript_close').is_enabled())
+        WebDriverWait(driver, 2).until(lambda x: x.find_element_by_id('cookiescript_close').is_enabled())
     except TimeoutException:
         driver.refresh()
         irp_auto()
 
     # Are you happy to accept cookies?
     driver.find_element_by_id('cookiescript_close').click()
+    if driver.find_element_by_id('cookiescript_injected').get_attribute('style') != 'display: none;':
+        driver.find_element_by_id('cookiescript_close').click()
 
     # Category
     category_select = Select(driver.find_element_by_id('Category'))
@@ -80,7 +82,7 @@ def irp_auto():
 
     # Nationality
     nationality_select = Select(driver.find_element_by_id('Nationality'))
-    nationality_select.select_by_index(153)  # Index 153 is Taiwan, check yours by inspecting elements in Console
+    nationality_select.select_by_index(96)  # Index 153 is Taiwan, check yours by inspecting elements in Console
 
     # Email
     driver.find_element_by_name('Email').send_keys(email)
@@ -121,15 +123,17 @@ def irp_auto():
         sleep(2)
         try:
             driver.find_element_by_xpath('//button[text()="Book This"]').click()
-            # driver.find_element_by_id('Submit').click()   # Will fail due to reCAPTCHA
             os.system('say "Please check for I R P appointment"')
+            driver.find_element_by_id('Submit').click()  # Will fail due to reCAPTCHA
             # Use your `normal` browser for submit
             sleep(600)
         except NoSuchElementException:
             # Edge case control
-            if not find_appointment_button.is_enabled() or driver.find_elements_by_xpath(
-                    "//*[contains(text(), 'Why is this happening to me?')]") \
-                    or driver.find_elements_by_xpath("//*[contains(text(), 'Please try reloading this page.')]"):
+            if driver.find_elements_by_xpath("//*[contains(text(), 'Why is this happening to me?')]"):
+                # Manually restart
+                os.system('say "reCAPTCHA error"')
+            elif not find_appointment_button.is_enabled() or \
+                    driver.find_elements_by_xpath("//*[contains(text(), 'There was a problem')]"):
                 driver.refresh()
                 irp_auto()
             # No appointment(s) are currently available
