@@ -2,7 +2,7 @@
 
 ## Only work for non family application with passport ID
 
-### Inorder to make fake-useragent run properly (avoid IndexError: list index out of range)
+### In order to make fake-useragent run properly (avoid IndexError: list index out of range)
 #### open /usr/local/lib/python3.9/dist-packages/fake_useragent/utils.py in your favorite text editor using admin privileges. Go to line 99, and change the w3
 
     html = html.split('<table class="w3-table-all notranslate">')[1]
